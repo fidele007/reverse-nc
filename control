@@ -1,0 +1,9 @@
+Package: com.fidele007.reversenc
+Name: ReverseNC
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Swap Today and Notifications in Notification Center!
+Maintainer: fidele007 <kforcefidele@yahoo.com>
+Author: fidele007 <kforcefidele@yahoo.com>
+Section: Tweaks
