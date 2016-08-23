@@ -56,4 +56,38 @@
 
   %orig;
 }
+
+// Re-create swipe gestures for swapping Notifications and Today views
+- (void)handleModeChange:(id)sender {
+  if (![sender isKindOfClass:%c(UISwipeGestureRecognizer)]) {
+    return %orig;
+  }
+
+  UISwipeGestureRecognizer *gesture = (UISwipeGestureRecognizer *)sender;
+  SBModeControlManager *modeControl = MSHookIvar<SBModeControlManager *>(self, "_modeControl");
+  if (gesture.direction == UISwipeGestureRecognizerDirectionRight) {
+    if ([self.selectedViewController isKindOfClass:%c(SBTodayViewController)]) {
+
+      /* Set |selectedSegmentIndex| to 0 because setSelectedViewController method is hooked to
+         show Notifications view only if |selectedSegmentIndex| = 0 */
+      modeControl.selectedSegmentIndex = 0;
+
+      /* Passing self.viewControllers[1] as the argument is only for consistency's sake
+         since the view controller will always be of Notifications if |selectedSegmentIndex| = 0 */
+      [self setSelectedViewController:self.viewControllers[1] animated:YES];
+
+    } else {
+      // If not in Today view, just do your stuff
+      return %orig;
+    }
+  // Same reasoning for the gesture in the other direction
+  } else if (gesture.direction == UISwipeGestureRecognizerDirectionLeft) {
+    if ([self.selectedViewController isKindOfClass:%c(SBNotificationsViewController)]) {
+      modeControl.selectedSegmentIndex = 1;
+      [self setSelectedViewController:self.viewControllers[0] animated:YES];
+    } else {
+      return %orig;
+    }
+  }
+}
 %end
